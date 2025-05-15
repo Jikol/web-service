@@ -1,0 +1,45 @@
+{
+  "name": "web-service",
+  "author": "Ondřej Javorský <gikol113@gmail.com>",
+  "private": true,
+  "license": "MIT",
+  "readme": "README.md",
+  "scripts": {
+    "dev": "bun run docs && NODE_OPTIONS='--no-deprecation' NODE_ENV=development nodemon src/app.ts",
+    "prev": "bun run prod && node --enable-source-maps --no-deprecation dist/index.js",
+    "prod": "rimraf dist && ts-node config/scripts/esbuild.prod.ts",
+    "docs": "ts-node config/scripts/docs.ts && redocly build-docs --title 'ReDoc - WEB SERVICE' -o static/redoc.html docs/openapi.json",
+    "lint": "eslint . && redocly lint --skip-rule no-undefined-server-variable docs/openapi.json && echo 'Success! No lint errors or warnings' | chalk --stdin green",
+    "form": "prettier . -w"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "env-cmd": "^10.1.0",
+    "express": "^4.21.1",
+    "pino": "^8.20.0",
+    "swagger-jsdoc": "^6.2.8",
+    "zod": "^3.25.36"
+  },
+  "devDependencies": {
+    "@babel/types": "^7.24.5",
+    "@redocly/cli": "^1.34.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.30",
+    "@types/swagger-jsdoc": "^6",
+    "@typescript-eslint/eslint-plugin": "^5.45.1",
+    "@typescript-eslint/parser": "^5.45.1",
+    "chalk-cli": "^5.0.1",
+    "esbuild": "^0.25.0",
+    "eslint": "^8.29.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^3.1.0",
+    "pino-pretty": "^11.0.0",
+    "prettier": "^2.7.1",
+    "rimraf": "^5.0.1",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^4.9.3"
+  }
+}

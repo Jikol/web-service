@@ -1,0 +1,20 @@
+version: 3
+
+dotenv: [".env.local"]
+
+tasks:
+  ## development tasks ##
+  init:
+    desc: >
+      Initialize express project for development | 
+      Usage: task init (i) [-- hard]
+    aliases: [i]
+    platforms: [linux]
+    cmds:
+      - >
+        {{if eq .CLI_ARGS "hard"}}
+          rm -rf bun.lock
+        {{end}}
+      - rm -rf node_modules
+      - bun install
+  ## ----------------- ##

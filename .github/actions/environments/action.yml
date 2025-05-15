@@ -1,0 +1,13 @@
+name: Prepare Environments
+description: Prepare environment variables for additonal steps
+outputs:
+  CI_DOCKER_TAG:
+    description: Docker tag version
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        echo "CI_DOCKER_TAG=$(echo "${{ github.ref_name }}" | \
+          awk '{gsub(/^v/, "", $0); print}'
+        )" >> $GITHUB_ENV

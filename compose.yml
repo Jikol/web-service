@@ -1,0 +1,22 @@
+name: ${PROJECT_NAME:-web-service}
+
+services:
+  api:
+    container_name: ${DOCKER_NAME:-api}
+    image: ${DOCKER_IMAGE:-web-service/api}:${DOCKER_TAG:-latest}
+    profiles: [prod]
+    environment:
+      API_PORT: ${API_PORT:?error}
+    ports:
+      - ${API_PORT:?error}:${API_PORT:?error}
+    restart: unless-stopped
+
+  api-healthcheck:
+    container_name: ${DOCKER_NAME:-api}-healthcheck
+    image: alpine
+    profiles: [prod]
+    restart: no
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["sh", "-c", "echo 'All services are healthy, exiting.'"]

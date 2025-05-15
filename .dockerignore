@@ -1,0 +1,16 @@
+.idea
+.git
+dist
+docs
+node_modules
+.dockerignore
+.gitattributes
+.gitlab-ci.yml
+.gitignore
+compose.yml
+Dockerfile
+Taskfile.yml
+LICENSE
+README.md
+template.env
+**/*.local

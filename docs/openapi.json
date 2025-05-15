@@ -1,0 +1,74 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "RETS API",
+    "version": "{{VERSION}}",
+    "description": "Exymple REST API for GitLab CI/CD demonstration purpose",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/license/mit"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://{{HOST}}"
+    }
+  ],
+  "security": [],
+  "paths": {
+    "/api/v1/foo": {
+      "get": {
+        "operationId": "getFoo",
+        "summary": "Foo endpoint",
+        "description": "Returns a simple string to verify the API is working.",
+        "responses": {
+          "200": {
+            "description": "Successful response with a plain message.",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Bar!"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request. The request could not be understood or was missing required parameters.\n"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "getOpenapijson",
+        "summary": "Serve OpenAPI documentation",
+        "description": "Serves the OpenAPI documentation as a JSON file.",
+        "responses": {
+          "200": {
+            "description": "The OpenAPI documentation in JSON format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "The OpenAPI schema document."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The documentation file was not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}
