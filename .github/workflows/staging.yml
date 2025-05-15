@@ -1,0 +1,72 @@
+name: Staging Workflow
+
+run-name: ${{ github.event.head_commit.message }}
+
+env:
+  HOSTNAME: "3.123.200.77"
+  API_PORT: ${{ vars.API_PORT }}
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  test:
+    name: Test (staging)
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run tests via Docker
+        run: |
+          docker build \
+            --target test \
+            --build-arg API_PORT=$API_PORT \
+            --output=type=cacheonly .
+  build:
+    name: Build (staging)
+    runs-on: ubuntu-latest
+    environment: staging
+    needs: [test]
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run build via Docker
+        run: |
+          docker build \
+            --tag it/rest-api-staging \
+            --target final \
+            --build-arg DOCKER_TAG=latest \
+            --build-arg API_PORT=$API_PORT .
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push built image to Container Registry
+        run: |
+          docker tag it/rest-api-staging ghcr.io/jikol/rest-api-staging
+          docker push ghcr.io/jikol/rest-api-staging
+  deploy:
+    name: Deploy
+    runs-on: [staging]
+    environment:
+      name: staging
+      url: http://${{ env.HOSTNAME }}:${{ env.API_PORT }}
+    needs: [test, build]
+    container:
+      image: docker:28.0.2-cli
+      env:
+        DOCKER_NAME: rest-api-github-staging
+        DOCKER_IMAGE: ghcr.io/jikol/rest-api-staging
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run compose via Docker
+        run: |
+          docker compose --profile prod up \
+            -d --no-build --force-recreate \
+            --pull missing

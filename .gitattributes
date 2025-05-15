@@ -1,0 +1,31 @@
+* text=auto eol=lf
+
+*.ts        diff=ts
+*.tsx       diff=ts
+*.json      diff=json
+*.html      diff=html
+*.css       diff=css
+*.scss      diff=css
+*.md        diff=markdown
+*.log       diff
+*.xml       diff
+
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.svg       binary
+*.woff      binary
+*.woff2     binary
+*.ttf       binary
+*.eot       binary
+*.mp4       binary
+*.mp3       binary
+*.zip       binary
+*.gz        binary
+*.tar       binary
+*.pdf       binary
+*.pickle    binary
+*.pkl       binary
+bun.lock    binary
