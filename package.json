@@ -1,6 +1,7 @@
 {
   "name": "web-service",
   "author": "Ondřej Javorský <gikol113@gmail.com>",
+  "private": true,
   "license": "MIT",
   "readme": "README.md",
   "scripts": {
