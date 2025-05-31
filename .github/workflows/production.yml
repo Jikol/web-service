@@ -54,15 +54,17 @@ jobs:
         PROJECT_NAME: web-service-github
         DOCKER_NAME: api-github
         DOCKER_IMAGE: web-service/api-github
-        DOCKER_TAG: $CI_DOCKER_TAG
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - uses: actions/checkout@v4
+      - name: Install bash to job image (docker:28.1.1-cli)
+        run: |
+          apk add --no-cache bash
       - name: Prepare environment variables
         uses: ./.github/actions/environments
       - name: Run compose via Docker
         run: |
-          docker compose --profile prod up \
+          DOCKER_TAG=$CI_DOCKER_TAG docker compose --profile prod up \
             -d --no-build --force-recreate \
             --pull missing
