@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: Test (staging)
+    name: test-staging
     runs-on: ubuntu-latest
     environment: staging
     steps:
@@ -23,48 +23,53 @@ jobs:
             --target test \
             --build-arg API_PORT=$API_PORT \
             --output=type=cacheonly .
+
   build:
-    name: Build (staging)
+    name: build-staging
     runs-on: ubuntu-latest
     environment: staging
     needs: [test]
-    permissions:
-      packages: write
-      contents: read
     steps:
       - uses: actions/checkout@v4
       - name: Run build via Docker
         run: |
           docker build \
-            --tag it/rest-api-staging \
+            --tag web-service/api-github:staging \
             --target final \
             --build-arg DOCKER_TAG=latest \
             --build-arg API_PORT=$API_PORT .
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Push built image to Container Registry
+      - name: Save built image via Docker
         run: |
-          docker tag it/rest-api-staging ghcr.io/jikol/rest-api-staging
-          docker push ghcr.io/jikol/rest-api-staging
+          docker save -o api-github-staging.tar web-service/api-github:staging
+      - uses: actions/upload-artifact@v4
+        with:
+          name: staging-docker-image
+          path: api-github-staging.tar
+
   deploy:
-    name: Deploy
-    runs-on: [staging]
+    name: deploy-staging
+    runs-on: [staging-deploy]
     environment:
       name: staging
       url: http://${{ env.HOSTNAME }}:${{ env.API_PORT }}
     needs: [test, build]
     container:
-      image: docker:28.0.2-cli
+      image: docker:28.1.1-cli
       env:
-        DOCKER_NAME: rest-api-github-staging
-        DOCKER_IMAGE: ghcr.io/jikol/rest-api-staging
+        DOCKER_NAME: api-github-staging
+        DOCKER_IMAGE: ghcr.io/jikol/api-gitlab
+        DOCKER_TAG: staging
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: staging-docker-image
+          path: api-github-staging.tar
+      - name: Load built image via Docker
+        run: |
+          docker load -i api-gitlab-staging.tar
       - name: Run compose via Docker
         run: |
           docker compose --profile prod up \
