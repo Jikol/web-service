@@ -56,8 +56,9 @@ jobs:
     container:
       image: docker:28.1.1-cli
       env:
+        PROJECT_NAME: web-service-github-staging
         DOCKER_NAME: api-github-staging
-        DOCKER_IMAGE: ghcr.io/jikol/api-gitlab
+        DOCKER_IMAGE: web-service/api-github
         DOCKER_TAG: staging
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
