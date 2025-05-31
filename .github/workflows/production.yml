@@ -74,6 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    needs: [deploy]
     steps:
       - uses: actions/checkout@v4
       - uses: softprops/action-gh-release@v2
