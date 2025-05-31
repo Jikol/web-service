@@ -75,7 +75,7 @@ deploy-staging:
     url: http://${STAGING_HOSTNAME}:${API_PORT}/
   variables:
     DOCKER_NAME: api-gitlab-staging
-    DOCKER_IMAGE: registry.gitlab.com/jikoll/web-service/api-gitlab
+    DOCKER_IMAGE: web-service/api-gitlab
     DOCKER_TAG: staging
   before_script: |
     docker load -i api-gitlab-staging.tar
@@ -95,14 +95,14 @@ build-production:
   script:
     - |
       docker build \
-        --tag registry.gitlab.com/jikoll/web-service/api-gitlab \
+        --tag registry.gitlab.com/jikoll/web-service/api-gitlab:latest \
         --target final \
         --build-arg DOCKER_TAG=$CI_DOCKER_TAG \
         --build-arg API_PORT=$API_PORT .
     - |
-      docker tag registry.gitlab.com/jikoll/web-service/api-gitlab \
+      docker tag registry.gitlab.com/jikoll/web-service/api-gitlab:latest \
         registry.gitlab.com/jikoll/web-service/api-gitlab:$CI_DOCKER_TAG
-    - docker push registry.gitlab.com/jikoll/web-service/api-gitlab
+    - docker push registry.gitlab.com/jikoll/web-service/api-gitlab:latest
     - docker push registry.gitlab.com/jikoll/web-service/api-gitlab:$CI_DOCKER_TAG
   dependencies:
     - environments
