@@ -53,7 +53,7 @@ jobs:
       env:
         PROJECT_NAME: web-service-github
         DOCKER_NAME: api-github
-        DOCKER_IMAGE: web-service/api-github
+        DOCKER_IMAGE: ghcr.io/jikol/api-github
       volumes:
         - /var/run/docker.sock:/var/run/docker.sock
     steps:
