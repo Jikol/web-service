@@ -69,7 +69,7 @@ jobs:
           path: api-github-staging.tar
       - name: Load built image via Docker
         run: |
-          docker load -i api-gitlab-staging.tar
+          docker load -i api-github-staging.tar
       - name: Run compose via Docker
         run: |
           docker compose --profile prod up \
