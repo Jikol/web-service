@@ -74,6 +74,7 @@ deploy-staging:
     name: staging
     url: http://${STAGING_HOSTNAME}:${API_PORT}/
   variables:
+    PROJECT_NAME: web-service-gitlab-staging
     DOCKER_NAME: api-gitlab-staging
     DOCKER_IMAGE: web-service/api-gitlab
     DOCKER_TAG: staging
@@ -115,6 +116,7 @@ deploy-production:
     name: production
     url: http://${PRODUCTION_HOSTNAME}:${API_PORT}/
   variables:
+    PROJECT_NAME: web-service-gitlab
     DOCKER_NAME: api-gitlab
     DOCKER_IMAGE: registry.gitlab.com/jikoll/web-service/api-gitlab
     DOCKER_TAG: $CI_DOCKER_TAG
