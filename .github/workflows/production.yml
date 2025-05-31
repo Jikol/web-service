@@ -68,3 +68,16 @@ jobs:
           DOCKER_TAG=$CI_DOCKER_TAG docker compose --profile prod up \
             -d --no-build --force-recreate \
             --pull missing
+
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Release ${{ github.ref_name }}"
+          body: "Example description"
