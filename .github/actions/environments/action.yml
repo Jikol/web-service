@@ -6,7 +6,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - shell: sh
+    - shell: bash
       run: |
         echo "CI_DOCKER_TAG=$(echo "${{ github.ref_name }}" | \
           awk '{gsub(/^v/, "", $0); print}'
