@@ -37,7 +37,7 @@ environments:
     echo "CI_DOCKER_TAG=$(echo "$CI_COMMIT_TAG" | \
       awk '{gsub(/^v/, "", $0); print}'
     )" >> variables.env
-    echo "CI_REPOSITORY_NAME=$(echo "$CI_PROJECT_NAME" | \
+    echo "CI_REPOSITORY_NAME=$(echo "$CI_PROJECT_PATH" | \
       tr '[:upper:]' '[:lower:]'
     )" >> variables.env
   artifacts:
@@ -47,10 +47,8 @@ environments:
 test-staging:
   <<: *staging_pipeline
   stage: test
-  script:
-    - printenv | sort
-    - |
-      docker build \
+  script: |
+    docker build \
       --target test \
       --build-arg API_PORT=$API_PORT \
       --output=type=cacheonly .
@@ -101,15 +99,15 @@ build-production:
   script:
     - |
       docker build \
-        --tag registry.gitlab.com/jikoll/web-service/api-gitlab:latest \
+        --tag registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab:latest \
         --target final \
         --build-arg DOCKER_TAG=$CI_DOCKER_TAG \
         --build-arg API_PORT=$API_PORT .
     - |
-      docker tag registry.gitlab.com/jikoll/web-service/api-gitlab:latest \
-        registry.gitlab.com/jikoll/web-service/api-gitlab:$CI_DOCKER_TAG
-    - docker push registry.gitlab.com/jikoll/web-service/api-gitlab:latest
-    - docker push registry.gitlab.com/jikoll/web-service/api-gitlab:$CI_DOCKER_TAG
+      docker tag registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab:latest \
+        registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab:$CI_DOCKER_TAG
+    - docker push registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab:latest
+    - docker push registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab:$CI_DOCKER_TAG
   dependencies:
     - environments
 
@@ -123,7 +121,7 @@ deploy-production:
   variables:
     PROJECT_NAME: web-service-gitlab
     DOCKER_NAME: api-gitlab
-    DOCKER_IMAGE: registry.gitlab.com/jikoll/web-service/api-gitlab
+    DOCKER_IMAGE: registry.gitlab.com/$CI_REPOSITORY_NAME/api-gitlab
     DOCKER_TAG: $CI_DOCKER_TAG
   before_script: |
     echo "$CI_JOB_TOKEN" | \
