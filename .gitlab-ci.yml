@@ -138,8 +138,16 @@ release:
   stage: release
   image: registry.gitlab.com/gitlab-org/release-cli:v0.23.0
   script:
-    - echo ""
-  release:
-    tag_name: $CI_COMMIT_TAG
-    name: "Release $CI_COMMIT_TAG"
-    description: "Example description"
+    - |
+      STATUS=$(wget --spider --server-response --quiet \
+        $CI_API_V4_URL/projects/$CI_PROJECT_ID/releases/$CI_COMMIT_TAG 2>&1 | \
+        awk '/^  HTTP/{print $2}')
+      if [ "$STATUS" != "200" ]; then
+        echo "Release for tag $CI_COMMIT_TAG already exist"
+        exit 1
+      fi
+    - |
+      release-cli create \
+      --tag-name $CI_COMMIT_TAG \
+      --name "Release $CI_COMMIT_TAG" \
+      --description "Example description"
