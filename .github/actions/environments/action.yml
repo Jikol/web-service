@@ -3,11 +3,16 @@ description: Prepare environment variables for additonal steps
 outputs:
   CI_DOCKER_TAG:
     description: Docker tag version
+  CI_REPOSITORY_NAME:
+    description: Repository name standardised to lowercase
 runs:
   using: composite
   steps:
-    - shell: bash
+    - shell: bash|
       run: |
         echo "CI_DOCKER_TAG=$(echo "${{ github.ref_name }}" | \
           awk '{gsub(/^v/, "", $0); print}'
+        )" >> $GITHUB_ENV
+        echo "CI_REPOSITORY_NAME=$(echo "${{ github.repository }}" | \
+          tr '[:upper:]' '[:lower:]'
         )" >> $GITHUB_ENV
